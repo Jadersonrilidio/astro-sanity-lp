@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+@theme {
+	--color-background: #ffffff;
+	--color-primary: #cb5543;
+	--color-primary-click: #a21904;
+	--color-text: #656160;
+	--color-dark: #24211e;
+	--color-on-primary: #ffffff;
+	--spacing-header-height: 72px;
+	--spacing-gutter: 24px;
+	--duration-menu: 1.6s;
+	--ease-menu: cubic-bezier(0.25, 1, 0.5, 1);
+	--font-menu: "Josefin Sans", "Century Gothic", "Avenir Next", system-ui, sans-serif;
+}

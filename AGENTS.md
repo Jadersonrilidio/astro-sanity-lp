@@ -8,7 +8,11 @@ astro dev --background
 
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
 
+
 ## Documentation
+
+Access Astro docs MCP server on:
+- [Astro docs](.vscode/mcp.json)
 
 Full documentation: https://docs.astro.build
 
