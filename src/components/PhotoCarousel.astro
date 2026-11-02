@@ -23,26 +23,6 @@ if (!Number.isFinite(speed) || speed < 0) {
 	style="--carousel-card-width: min(70vw, 20rem)"
 	class="group block w-full overflow-x-hidden"
 >
-	<!-- Carousel Controls -->
-	<div class="flex h-12 items-center justify-end gap-3 px-(--spacing-gutter) opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
-		<button
-			type="button"
-			data-carousel-step="-1"
-			aria-label="Rolar projetos para a esquerda"
-			class="inline-flex h-10 w-10 cursor-pointer items-center justify-center border-0 bg-transparent text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-		>
-			<img src="/assets/icon/arrow-left.svg" alt="" aria-hidden="true" class="h-6 w-6" />
-		</button>
-		<button
-			type="button"
-			data-carousel-step="1"
-			aria-label="Rolar projetos para a direita"
-			class="inline-flex h-10 w-10 cursor-pointer items-center justify-center border-0 bg-transparent text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-		>
-			<img src="/assets/icon/arrow-right.svg" alt="" aria-hidden="true" class="h-6 w-6" />
-		</button>
-	</div>
-
 	<div class="w-full touch-pan-y" data-carousel-viewport>
 		<div class="flex w-max gap-4" data-carousel-track>
 			<div class="flex shrink-0 gap-4" data-carousel-group>

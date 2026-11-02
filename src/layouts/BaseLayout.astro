@@ -95,16 +95,14 @@ const description: string = content.description || 'Micra é um escritório de a
 </html>
 
 <script>
-	const menu = document.getElementById('site-menu');
-	const openBtn = document.querySelector<HTMLButtonElement>('.menu-toggle');
-	const closeBtn = document.querySelector<HTMLButtonElement>('.menu-close');
-
-	if (!menu || !openBtn || !closeBtn) {
-		throw new Error('Required menu elements were not found.');
-	}
-
 	function setMenu(open: boolean): void {
-		if (!menu || !openBtn || !closeBtn) return;
+		const menu = document.getElementById('site-menu');
+		const openBtn = document.querySelector<HTMLButtonElement>('.menu-toggle');
+		const closeBtn = document.querySelector<HTMLButtonElement>('.menu-close');
+
+		if (!menu || !openBtn || !closeBtn) {
+			throw new Error('Required menu elements were not found.');
+		}
 
 		menu.classList.toggle('pointer-events-auto', open);
 		menu.classList.toggle('translate-x-0', open);
@@ -119,15 +117,20 @@ const description: string = content.description || 'Micra é um escritório de a
 		(open ? closeBtn : openBtn).focus({ preventScroll: true });
 	}
 
-	openBtn.addEventListener('click', () => setMenu(true));
-	closeBtn.addEventListener('click', () => setMenu(false));
-	// menu.addEventListener('click', (event: MouseEvent) => {
-	// 	if (event.target instanceof Element && event.target.closest('.menu-nav a')) {
-	// 		setMenu(false);
-	// 	}
-	// });
+	document.addEventListener('click', (event: MouseEvent) => {
+		if (!(event.target instanceof Element)) return;
+
+		if (event.target.closest('.menu-toggle')) {
+			setMenu(true);
+		} else if (event.target.closest('.menu-close')) {
+			setMenu(false);
+		}
+	});
+
 	document.addEventListener('keydown', (event: KeyboardEvent) => {
-		if (event.key === 'Escape' && menu.classList.contains('translate-x-0')) {
+		const menu = document.getElementById('site-menu');
+
+		if (event.key === 'Escape' && menu?.classList.contains('translate-x-0')) {
 			setMenu(false);
 		}
 	});
