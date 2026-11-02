@@ -10,6 +10,8 @@ if (items.length === 0) {
 	throw new Error('PhotoCarousel requires at least one card.');
 }
 
+const eager_indexes: number[] = [0, 1, items.length - 1];
+
 if (!Number.isFinite(speed) || speed < 0) {
 	throw new Error('PhotoCarousel speed must be a non-negative number.');
 }
@@ -27,7 +29,7 @@ if (!Number.isFinite(speed) || speed < 0) {
 		<div class="flex w-max gap-4" data-carousel-track>
 			<div class="flex shrink-0 gap-4" data-carousel-group>
 				{items.map((card: Card, index: number) => (
-					<PhotoCard card={card} loading={index === 0 ? 'eager' : 'lazy'} />
+					<PhotoCard card={card} loading={eager_indexes.includes(index) ? 'eager' : 'lazy'} />
 				))}
 			</div>
 			<div class="flex shrink-0 gap-4" data-carousel-group aria-hidden="true" inert>
