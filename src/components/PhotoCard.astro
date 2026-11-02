@@ -1,0 +1,47 @@
+---
+import type { Card } from '../types/photo-carousel';
+
+interface Props {
+	card: Card;
+	duplicate?: boolean;
+	loading?: 'eager' | 'lazy';
+}
+
+const { card, duplicate = false, loading = 'lazy' } = Astro.props;
+---
+
+<a
+	href="#"
+	tabindex={duplicate ? -1 : undefined}
+	data-carousel-card
+	class="block w-(--carousel-card-width) shrink-0 text-dark hover:text-foreground-hover no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+>
+	<figure class="m-0">
+		<div class="relative aspect-3/4 w-full">
+			<img
+				src={card.imageSrc}
+				alt={card.imageAlt}
+				loading={loading}
+				decoding="async"
+				draggable="false"
+				class="h-full w-full object-cover object-center"
+				data-card-image
+			/>
+			<div
+				hidden
+				data-image-fallback
+				role="img"
+				aria-label={card.imageAlt}
+				class="absolute inset-0 flex items-center justify-center text-center text-sm text-foreground"
+			>
+				Imagem indisponível
+			</div>
+		</div>
+		<figcaption class="mt-1">
+			<h3 class="m-0 text-base text-inherit font-bold font-primary leading-tight sm:text-lg">{card.title}</h3>
+			<p class="mt-0 mb-0 text-xs font-tags leading-relaxed text-foreground">
+				{card.tags.join(' · ')}
+			</p>
+		</figcaption>
+	</figure>
+</a>

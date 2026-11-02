@@ -1,15 +1,59 @@
 ---
 import '../styles/global.css';
-import Base from '../layouts/Base.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PhotoCarousel from '../components/PhotoCarousel.astro';
+import type { Card } from '../types/photo-carousel';
+
+const projects: Card[] = [
+	{
+		id: 'casa-ipe',
+		imageSrc: '/assets/img/carousel-sample-01.webp',
+		imageAlt: 'Projeto de arquitetura residencial',
+		title: 'Casa Ipê',
+		tags: ['Residencial', 'Arquitetura']
+	},
+	{
+		id: 'casa-costa',
+		imageSrc: '/assets/img/carousel-sample-02.webp',
+		imageAlt: 'Projeto de casa contemporânea',
+		title: 'Casa Costa',
+		tags: ['Interiores', 'Residencial']
+	},
+	{
+		id: 'casa-patio',
+		imageSrc: '/assets/img/carousel-sample-03.jpg',
+		imageAlt: 'Projeto de casa com pátio',
+		title: 'Casa Pátio',
+		tags: ['Reforma', 'Arquitetura']
+	},
+	{
+		id: 'casa-horizonte',
+		imageSrc: '/assets/img/carousel-sample-04.jpg',
+		imageAlt: 'Projeto de residência contemporânea',
+		title: 'Casa Horizonte',
+		tags: ['Residencial', 'Interiores']
+	},
+	{
+		id: 'edificio-brisa',
+		imageSrc: '/assets/img/carousel-sample-05.jpg',
+		imageAlt: 'Projeto de edifício residencial',
+		title: 'Edifício Brisa',
+		tags: ['Arquitetura', 'Urbanismo']
+	}
+];
 ---
 
-<Base
+<BaseLayout
+	theme="light"
 	content={{
 		title: 'Micra | Escritório de Arquitetura',
-		description:
-			'Micra é um escritório de arquitetura que busca a excelência em cada projeto, com atenção aos detalhes e foco na experiência do usuário.'
+		description: 'Micra é um escritório de arquitetura que busca a excelência em cada projeto, com atenção aos detalhes e foco na experiência do usuário.'
 	}}
 >
-</Base>
-
-
+	<PhotoCarousel
+		id="projetos"
+		items={projects}
+		ariaLabel="Projetos de arquitetura"
+		speed={18}
+	/>
+</BaseLayout>

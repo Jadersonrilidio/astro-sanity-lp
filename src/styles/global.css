@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
+
 @theme {
-	--color-background: #ffffff;
+	/* --color-background: #ffffff; */
 	--color-primary: #cb5543;
 	--color-primary-click: #a21904;
 	--color-text: #656160;
@@ -12,4 +13,26 @@
 	--duration-menu: 1.6s;
 	--ease-menu: cubic-bezier(0.25, 1, 0.5, 1);
 	--font-menu: "Josefin Sans", "Century Gothic", "Avenir Next", system-ui, sans-serif;
+	--font-primary: "Josefin Sans", "Century Gothic", "Avenir Next", system-ui, sans-serif;
+	--font-tags: "Inter", "Century Gothic", "Avenir Next", system-ui, sans-serif;
+
+	--color-background: #ffffff;
+	--color-foreground: #656160;
+	--color-foreground-hover: #cb5543;
+	--color-foreground-active: #a21904;
+	--color-menu-background: #cb5543;
+	--color-menu-foreground: #ffffff;
+	--color-menu-foreground-hover: #c9c6c5;
+	--color-menu-foreground-active: #656160;
+}
+
+:root[data-theme='dark'] {
+	--color-background: #24211e;
+	--color-foreground: #ffffff;
+	--color-foreground-hover: #c9c6c5;
+	--color-foreground-active: #656160;
+	--color-menu-background: #656160;
+	--color-menu-foreground: #ffffff;
+	--color-menu-foreground-hover: #c9c6c5;
+	--color-menu-foreground-active: #656160;
 }

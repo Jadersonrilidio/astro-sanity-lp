@@ -1,0 +1,134 @@
+---
+import '../styles/global.css';
+import { ClientRouter, fade } from 'astro:transitions';
+import type { BaseLayoutProps } from '../types/layout';
+
+
+interface Props extends BaseLayoutProps {}
+
+const { content, theme = 'light' } = Astro.props;
+
+const title: string = content.title || 'Micra | Escritório de Arquitetura';
+const description: string = content.description || 'Micra é um escritório de arquitetura que busca a excelência em cada projeto, com atenção aos detalhes e foco na experiência do usuário.';
+---
+
+<html lang="pt-BR" data-theme={theme} class="h-full bg-background text-foreground antialiased">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="title" content={title} />
+		<meta name="description" content={description} />
+		<!-- Import Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+		
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.svg" />
+		<title>{title}</title>
+		<ClientRouter />
+	</head>
+	<body transition:animate={fade({ duration: 1200 })} class="m-0 flex min-h-screen flex-col bg-background text-foreground font-sans">
+		<header class="flex h-header-height items-center justify-between px-(--spacing-gutter)">
+			<a class="inline-flex leading-none" href="/" aria-label="MICRA home">
+				<img src={theme === 'dark' ? '/assets/logo-micra-branco.svg' : '/assets/logo-micra.svg'} alt="micra logo" class="h-10 w-auto" />
+			</a>
+
+			<button
+				type="button"
+				class="menu-toggle flex h-7.5 w-9 flex-col justify-between border-0 bg-transparent p-0 text-foreground hover:text-foreground-hover active:text-foreground-active cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-foreground-hover"
+				aria-label="Abrir menu"
+				aria-controls="site-menu"
+				aria-expanded="false"
+			>
+				<span class="block h-0.75 w-full bg-current"></span>
+				<span class="block h-0.75 w-full bg-current"></span>
+				<span class="block h-0.75 w-full bg-current"></span>
+				<span class="block h-0.75 w-full bg-current"></span>
+			</button>
+
+			<!-- Menu Modal -->
+			<div
+				id="site-menu"
+				class="menu fixed inset-0 z-50 flex translate-x-full flex-col bg-menu-background px-(--spacing-gutter) pb-[12vh] text-menu-foreground opacity-100 invisible pointer-events-none transition-all duration-(--duration-menu) ease-menu motion-reduce:transition-none"
+				role="dialog"
+				aria-modal="true"
+				aria-label="Menu"
+			>
+				<button
+					type="button"
+					class="menu-close absolute right-(--spacing-gutter) top-[calc((var(--spacing-header-height)-30px)/2)] h-7.5 w-9 border-0 bg-transparent p-0 text-current cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-(--color-on-primary)"
+					aria-label="Fechar menu"
+				>
+					<svg viewBox="0 0 36 30" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" class="block h-full w-full">
+						<path d="M3 -1L33 31M33 -1L3 31"/>
+					</svg>
+				</button>
+
+				<nav class="menu-nav mt-auto" aria-label="Menu principal">
+					<ul class="m-0 flex list-none flex-col gap-4 p-0">
+						<li><a href="/" class="font-primary font-light text-[clamp(2.5rem,9vw,3rem)] uppercase leading-tight tracking-[0.04em] text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active no-underline">Início</a></li>
+						<li><a href="#sobre" class="font-primary font-light text-[clamp(2.5rem,9vw,3rem)] uppercase leading-tight tracking-[0.04em] text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active no-underline">Sobre</a></li>
+						<li><a href="#projetos" class="font-primary font-light text-[clamp(2.5rem,9vw,3rem)] uppercase leading-tight tracking-[0.04em] text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active no-underline">Projetos</a></li>
+						<li><a href="/contato" class="font-primary font-light text-[clamp(2.5rem,9vw,3rem)] uppercase leading-tight tracking-[0.04em] text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active no-underline">Contato</a></li>
+					</ul>
+				</nav>
+
+				<div class="mt-[clamp(48px,12vh,120px)] flex flex-col items-end gap-1">
+					<a href="#" aria-label="E-mail" class="inline-fit font-primary font-semibold text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active">
+						E-mail
+					</a>
+					<a href="#" aria-label="WhatsApp" class="inline-fit font-primary font-light text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active">
+						WhatsApp
+					</a>
+					<a href="#" aria-label="Instagram" class="inline-fit font-primary font-light text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active">
+						Instagram
+					</a>
+				</div>
+			</div>
+		</header>
+
+		<main class="flex flex-1 items-center justify-center">
+			<slot />
+		</main>
+	</body>
+</html>
+
+<script>
+	const menu = document.getElementById('site-menu');
+	const openBtn = document.querySelector<HTMLButtonElement>('.menu-toggle');
+	const closeBtn = document.querySelector<HTMLButtonElement>('.menu-close');
+
+	if (!menu || !openBtn || !closeBtn) {
+		throw new Error('Required menu elements were not found.');
+	}
+
+	function setMenu(open: boolean): void {
+		if (!menu || !openBtn || !closeBtn) return;
+
+		menu.classList.toggle('pointer-events-auto', open);
+		menu.classList.toggle('translate-x-0', open);
+		menu.classList.toggle('visible', open);
+		menu.classList.toggle('opacity-100', open);
+		menu.classList.toggle('pointer-events-none', !open);
+		menu.classList.toggle('translate-x-full', !open);
+		menu.classList.toggle('invisible', !open);
+		menu.classList.toggle('opacity-100', !open);
+		document.body.classList.toggle('overflow-hidden', open);
+		openBtn.setAttribute('aria-expanded', String(open));
+		(open ? closeBtn : openBtn).focus({ preventScroll: true });
+	}
+
+	openBtn.addEventListener('click', () => setMenu(true));
+	closeBtn.addEventListener('click', () => setMenu(false));
+	// menu.addEventListener('click', (event: MouseEvent) => {
+	// 	if (event.target instanceof Element && event.target.closest('.menu-nav a')) {
+	// 		setMenu(false);
+	// 	}
+	// });
+	document.addEventListener('keydown', (event: KeyboardEvent) => {
+		if (event.key === 'Escape' && menu.classList.contains('translate-x-0')) {
+			setMenu(false);
+		}
+	});
+</script>

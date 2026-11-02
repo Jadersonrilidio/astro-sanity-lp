@@ -1,0 +1,356 @@
+---
+import PhotoCard from './PhotoCard.astro';
+import type { Card, PhotoCarouselProps } from '../types/photo-carousel';
+
+interface Props extends PhotoCarouselProps {}
+
+const { items, ariaLabel, speed = 18, id } = Astro.props;
+
+if (items.length === 0) {
+	throw new Error('PhotoCarousel requires at least one card.');
+}
+
+if (!Number.isFinite(speed) || speed < 0) {
+	throw new Error('PhotoCarousel speed must be a non-negative number.');
+}
+---
+
+<photo-carousel
+	id={id}
+	role="region"
+	aria-label={ariaLabel}
+	data-speed={speed}
+	style="--carousel-card-width: min(70vw, 20rem)"
+	class="group block w-full overflow-x-hidden"
+>
+	<!-- Carousel Controls -->
+	<div class="flex h-12 items-center justify-end gap-3 px-(--spacing-gutter) opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+		<button
+			type="button"
+			data-carousel-step="-1"
+			aria-label="Rolar projetos para a esquerda"
+			class="inline-flex h-10 w-10 cursor-pointer items-center justify-center border-0 bg-transparent text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+		>
+			<img src="/assets/icon/arrow-left.svg" alt="" aria-hidden="true" class="h-6 w-6" />
+		</button>
+		<button
+			type="button"
+			data-carousel-step="1"
+			aria-label="Rolar projetos para a direita"
+			class="inline-flex h-10 w-10 cursor-pointer items-center justify-center border-0 bg-transparent text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+		>
+			<img src="/assets/icon/arrow-right.svg" alt="" aria-hidden="true" class="h-6 w-6" />
+		</button>
+	</div>
+
+	<div class="w-full touch-pan-y" data-carousel-viewport>
+		<div class="flex w-max gap-4" data-carousel-track>
+			<div class="flex shrink-0 gap-4" data-carousel-group>
+				{items.map((card: Card, index: number) => (
+					<PhotoCard card={card} loading={index === 0 ? 'eager' : 'lazy'} />
+				))}
+			</div>
+			<div class="flex shrink-0 gap-4" data-carousel-group aria-hidden="true" inert>
+				{items.map((card: Card) => <PhotoCard card={card} duplicate loading="lazy" />)}
+			</div>
+		</div>
+	</div>
+</photo-carousel>
+
+<script>
+	class PhotoCarouselElement extends HTMLElement {
+		private readonly viewport: HTMLElement | null;
+		private readonly track: HTMLElement | null;
+		private readonly groups: HTMLElement[];
+		private readonly cards: HTMLElement[];
+		private readonly speed: number;
+		private readonly motionPreference: MediaQueryList;
+		private readonly resizeObserver: ResizeObserver;
+		private readonly intersectionObserver: IntersectionObserver;
+		private readonly pausedReasons = new Set<string>();
+		private animationFrame = 0;
+		private lastFrameTime = 0;
+		private offset = 0;
+		private cycleWidth = 0;
+		private canScroll = false;
+		private hasMeasured = false;
+		private pointerId: number | null = null;
+		private pointerStartX = 0;
+		private previousPointerX = 0;
+		private mouseStartX = 0;
+		private previousMouseX = 0;
+		private mouseDragging = false;
+		private didDrag = false;
+
+		constructor() {
+			super();
+			this.viewport = this.querySelector<HTMLElement>('[data-carousel-viewport]');
+			this.track = this.querySelector<HTMLElement>('[data-carousel-track]');
+			this.groups = Array.from(this.querySelectorAll<HTMLElement>('[data-carousel-group]'));
+			this.cards = Array.from(this.querySelectorAll<HTMLElement>('[data-carousel-card]'));
+			this.speed = Number(this.dataset.speed);
+			this.motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+			this.resizeObserver = new ResizeObserver(() => this.measure());
+			this.intersectionObserver = new IntersectionObserver(([entry]) => {
+				this.setPaused('offscreen', !entry.isIntersecting);
+			});
+		}
+
+		private readonly onPointerEnter = (): void => this.setPaused('pointer', true);
+		private readonly onPointerLeave = (): void => this.setPaused('pointer', false);
+		private readonly onPointerDown = (event: PointerEvent): void => {
+			this.setPaused('pointerdown', true);
+			if (
+				event.pointerType === 'mouse' ||
+				!this.canScroll ||
+				(event.target instanceof Element && event.target.closest('button'))
+			) {
+				return;
+			}
+
+			this.pointerId = event.pointerId;
+			this.pointerStartX = event.clientX;
+			this.previousPointerX = event.clientX;
+			this.setPointerCapture(event.pointerId);
+		};
+		private readonly onPointerMove = (event: PointerEvent): void => {
+			if (this.pointerId !== event.pointerId) return;
+
+			const delta = this.previousPointerX - event.clientX;
+			this.previousPointerX = event.clientX;
+			if (Math.abs(event.clientX - this.pointerStartX) > 4) this.didDrag = true;
+			if (!this.didDrag) return;
+
+			this.offset = this.wrap(this.offset + delta, this.cycleWidth);
+			this.render();
+			event.preventDefault();
+		};
+		private readonly onPointerUp = (event: PointerEvent): void => {
+			if (this.pointerId === event.pointerId) {
+				if (event.type === 'pointercancel') this.didDrag = false;
+				this.pointerId = null;
+			}
+			this.setPaused('pointerdown', false);
+		};
+		private readonly onMouseDown = (event: MouseEvent): void => {
+			if (
+				event.button !== 0 ||
+				!this.canScroll ||
+				(event.target instanceof Element && event.target.closest('button'))
+			) {
+				return;
+			}
+
+			this.mouseDragging = true;
+			this.mouseStartX = event.clientX;
+			this.previousMouseX = event.clientX;
+			this.didDrag = false;
+			this.setPaused('mousedrag', true);
+		};
+		private readonly onMouseMove = (event: MouseEvent): void => {
+			if (!this.mouseDragging) return;
+			if (event.buttons !== 1) {
+				this.onMouseUp();
+				return;
+			}
+
+			const delta = this.previousMouseX - event.clientX;
+			this.previousMouseX = event.clientX;
+			if (Math.abs(event.clientX - this.mouseStartX) > 4) this.didDrag = true;
+			if (!this.didDrag) return;
+
+			this.offset = this.wrap(this.offset + delta, this.cycleWidth);
+			this.render();
+			event.preventDefault();
+		};
+		private readonly onMouseUp = (): void => {
+			this.mouseDragging = false;
+			this.setPaused('mousedrag', false);
+		};
+		private readonly onTouchStart = (): void => this.setPaused('touch', true);
+		private readonly onTouchEnd = (): void => this.setPaused('touch', false);
+		private readonly onMotionPreferenceChange = (): void => {
+			this.setPaused('reduced-motion', this.motionPreference.matches);
+		};
+		private readonly onFocusOut = (event: FocusEvent): void => {
+			if (event.relatedTarget instanceof Node && this.contains(event.relatedTarget)) return;
+			this.setPaused('focus', false);
+		};
+		private readonly onImageError = (event: Event): void => {
+			if (!(event.target instanceof HTMLImageElement)) return;
+			this.showImageFallback(event.target);
+		};
+		private readonly onClick = (event: MouseEvent): void => {
+			if (this.didDrag) {
+				event.preventDefault();
+				event.stopPropagation();
+				this.didDrag = false;
+				return;
+			}
+			if (!(event.target instanceof Element)) return;
+			const button = event.target.closest<HTMLButtonElement>('[data-carousel-step]');
+			if (!button || !this.contains(button) || !this.canScroll) return;
+
+			const direction = Number(button.dataset.carouselStep);
+			const firstCard = this.groups[0]?.querySelector<HTMLElement>('[data-carousel-card]');
+			if (!firstCard) return;
+
+			const groupGap = Number.parseFloat(getComputedStyle(this.groups[0]).columnGap) || 0;
+			const step = firstCard.getBoundingClientRect().width + groupGap;
+			this.offset = this.wrap(this.offset - direction * step, this.cycleWidth);
+			this.render();
+		};
+		private readonly onFocusIn = (): void => this.setPaused('focus', true);
+		private readonly animate = (time: number): void => {
+			this.animationFrame = 0;
+			if (!this.canScroll || this.isPaused) {
+				this.lastFrameTime = 0;
+				return;
+			}
+
+			if (this.lastFrameTime === 0) this.lastFrameTime = time;
+			const elapsed = Math.min((time - this.lastFrameTime) / 1000, 0.05);
+			this.lastFrameTime = time;
+			this.offset = this.wrap(this.offset + this.speed * elapsed, this.cycleWidth);
+			this.render();
+			this.animationFrame = requestAnimationFrame(this.animate);
+		};
+
+		private get isPaused(): boolean {
+			return this.pausedReasons.size > 0;
+		}
+
+		connectedCallback(): void {
+			if (!this.viewport || !this.track || this.groups.length !== 2) {
+				throw new Error('PhotoCarousel is missing its viewport or card groups.');
+			}
+
+			this.addEventListener('pointerenter', this.onPointerEnter);
+			this.addEventListener('pointerleave', this.onPointerLeave);
+			this.addEventListener('pointerdown', this.onPointerDown);
+			this.addEventListener('pointermove', this.onPointerMove);
+			this.addEventListener('pointerup', this.onPointerUp);
+			this.addEventListener('pointercancel', this.onPointerUp);
+			this.addEventListener('mousedown', this.onMouseDown);
+			document.addEventListener('mousemove', this.onMouseMove);
+			document.addEventListener('mouseup', this.onMouseUp);
+			this.addEventListener('touchstart', this.onTouchStart, { passive: true });
+			this.addEventListener('touchend', this.onTouchEnd, { passive: true });
+			this.addEventListener('touchcancel', this.onTouchEnd, { passive: true });
+			this.addEventListener('focusin', this.onFocusIn);
+			this.addEventListener('focusout', this.onFocusOut);
+			this.addEventListener('click', this.onClick);
+			this.motionPreference.addEventListener('change', this.onMotionPreferenceChange);
+			this.setPaused('reduced-motion', this.motionPreference.matches);
+			this.cards.forEach((card) => {
+				const image = card.querySelector<HTMLImageElement>('[data-card-image]');
+				if (!image) return;
+				image.addEventListener('error', this.onImageError);
+				if (image.complete && image.naturalWidth === 0) this.showImageFallback(image);
+			});
+
+			this.resizeObserver.observe(this.viewport);
+			this.resizeObserver.observe(this.groups[0]);
+			this.intersectionObserver.observe(this);
+			this.measure();
+		}
+
+		disconnectedCallback(): void {
+			this.removeEventListener('pointerenter', this.onPointerEnter);
+			this.removeEventListener('pointerleave', this.onPointerLeave);
+			this.removeEventListener('pointerdown', this.onPointerDown);
+			this.removeEventListener('pointermove', this.onPointerMove);
+			this.removeEventListener('pointerup', this.onPointerUp);
+			this.removeEventListener('pointercancel', this.onPointerUp);
+			this.removeEventListener('mousedown', this.onMouseDown);
+			document.removeEventListener('mousemove', this.onMouseMove);
+			document.removeEventListener('mouseup', this.onMouseUp);
+			this.removeEventListener('touchstart', this.onTouchStart);
+			this.removeEventListener('touchend', this.onTouchEnd);
+			this.removeEventListener('touchcancel', this.onTouchEnd);
+			this.removeEventListener('focusin', this.onFocusIn);
+			this.removeEventListener('focusout', this.onFocusOut);
+			this.removeEventListener('click', this.onClick);
+			this.motionPreference.removeEventListener('change', this.onMotionPreferenceChange);
+			this.cards.forEach((card) => {
+				card.querySelector('[data-card-image]')?.removeEventListener('error', this.onImageError);
+			});
+			this.resizeObserver.disconnect();
+			this.intersectionObserver.disconnect();
+			cancelAnimationFrame(this.animationFrame);
+			this.animationFrame = 0;
+			this.lastFrameTime = 0;
+			this.pausedReasons.clear();
+			this.pointerId = null;
+			this.mouseDragging = false;
+			this.didDrag = false;
+		}
+
+		private setPaused(reason: string, paused: boolean): void {
+			if (paused) this.pausedReasons.add(reason);
+			else this.pausedReasons.delete(reason);
+			this.syncAnimation();
+		}
+
+		private measure(): void {
+			if (!this.viewport || !this.track || this.groups.length !== 2) return;
+
+			const previousCycleWidth = this.cycleWidth;
+			const progress = previousCycleWidth > 0 ? this.offset / previousCycleWidth : 0;
+			const groupGap = Number.parseFloat(getComputedStyle(this.track).columnGap) || 0;
+			const firstGroup = this.groups[0];
+			const nextCycleWidth = firstGroup.getBoundingClientRect().width + groupGap;
+			const viewportWidth = this.viewport.clientWidth;
+
+			this.cycleWidth = nextCycleWidth;
+			this.canScroll = viewportWidth > 0 && nextCycleWidth - groupGap > viewportWidth;
+			this.groups[1].hidden = !this.canScroll;
+
+			if (!this.canScroll) {
+				this.offset = 0;
+			} else if (!this.hasMeasured) {
+				const firstCard = firstGroup.querySelector<HTMLElement>('[data-carousel-card]');
+				const cardWidth = firstCard?.getBoundingClientRect().width ?? 0;
+				this.offset = this.wrap(nextCycleWidth - viewportWidth + cardWidth, nextCycleWidth);
+			} else if (previousCycleWidth > 0) {
+				this.offset = this.wrap(progress * nextCycleWidth, nextCycleWidth);
+			}
+
+			this.hasMeasured = true;
+			this.render();
+			this.syncAnimation();
+		}
+
+		private render(): void {
+			if (!this.viewport || !this.track) return;
+			this.track.style.transform = `translate3d(${-this.offset}px, 0, 0)`;
+		}
+
+		private syncAnimation(): void {
+			if (!this.canScroll || this.speed === 0 || this.isPaused) {
+				cancelAnimationFrame(this.animationFrame);
+				this.animationFrame = 0;
+				this.lastFrameTime = 0;
+				return;
+			}
+
+			if (this.animationFrame === 0) {
+				this.animationFrame = requestAnimationFrame(this.animate);
+			}
+		}
+
+		private showImageFallback(image: HTMLImageElement): void {
+			image.hidden = true;
+			const fallback = image.parentElement?.querySelector<HTMLElement>('[data-image-fallback]');
+			if (fallback) fallback.hidden = false;
+		}
+
+		private wrap(value: number, length: number): number {
+			return length > 0 ? ((value % length) + length) % length : 0;
+		}
+	}
+
+	if (!customElements.get('photo-carousel')) {
+		customElements.define('photo-carousel', PhotoCarouselElement);
+	}
+</script>
