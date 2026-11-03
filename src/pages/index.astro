@@ -1,8 +1,8 @@
 ---
 import '../styles/global.css';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PhotoCarousel from '../components/PhotoCarousel.astro';
-import type { Card } from '../types/photo-carousel';
+import CardCarousel from '../components/CardCarousel.astro';
+import type { Card } from '../types/card-carousel';
 
 const projects: Card[] = [
 	{
@@ -50,7 +50,7 @@ const projects: Card[] = [
 		description: 'Micra é um escritório de arquitetura que busca a excelência em cada projeto, com atenção aos detalhes e foco na experiência do usuário.'
 	}}
 >
-	<PhotoCarousel
+	<CardCarousel
 		id="projetos"
 		items={projects}
 		ariaLabel="Projetos de arquitetura"

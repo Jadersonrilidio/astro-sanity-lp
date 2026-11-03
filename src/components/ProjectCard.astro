@@ -1,5 +1,5 @@
 ---
-import type { Card } from '../types/photo-carousel';
+import type { Card } from '../types/card-carousel';
 
 interface Props {
 	card: Card;
@@ -14,7 +14,7 @@ const { card, duplicate = false, loading = 'lazy' } = Astro.props;
 	href="#"
 	tabindex={duplicate ? -1 : undefined}
 	data-carousel-card
-	class="block w-(--carousel-card-width) shrink-0 text-dark hover:text-foreground-hover no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+	class="block w-(--carousel-card-width) shrink-0 text-foreground hover:text-foreground-hover no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground-hover"
 >
 	<figure class="m-0">
 		<div class="relative aspect-3/4 w-full">

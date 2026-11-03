@@ -6,7 +6,7 @@ export type Card = {
 	tags: string[];
 };
 
-export type PhotoCarouselProps = {
+export type CardCarouselProps = {
 	items: Card[];
 	ariaLabel: string;
 	speed?: number;

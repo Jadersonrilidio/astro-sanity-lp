@@ -1,8 +1,9 @@
 ---
 import '../styles/global.css';
 import { ClientRouter, fade } from 'astro:transitions';
+import MenuIcon from '../components/icons/MenuIcon.astro';
+import CloseIcon from '../components/icons/CloseIcon.astro';
 import type { BaseLayoutProps } from '../types/layout';
-
 
 interface Props extends BaseLayoutProps {}
 
@@ -29,7 +30,7 @@ const description: string = content.description || 'Micra é um escritório de a
 		<ClientRouter />
 	</head>
 	<body transition:animate={fade({ duration: 1200 })} class="m-0 flex min-h-screen flex-col bg-background text-foreground font-sans">
-		<header class="flex h-header-height items-center justify-between px-(--spacing-gutter)">
+		<header class="flex h-25 items-center justify-between px-6">
 			<a class="inline-flex leading-none" href="/" aria-label="MICRA home">
 				<img src={theme === 'dark' ? '/assets/logo-micra-branco.svg' : '/assets/logo-micra.svg'} alt="micra logo" class="h-12 w-auto" />
 			</a>
@@ -41,51 +42,24 @@ const description: string = content.description || 'Micra é um escritório de a
 				aria-controls="site-menu"
 				aria-expanded="false"
 			>
-				<!-- <span class="block h-0.75 w-full bg-current"></span>
-				<span class="block h-0.75 w-full bg-current"></span>
-				<span class="block h-0.75 w-full bg-current"></span>
-				<span class="block h-0.75 w-full bg-current"></span> -->
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="4"
-					stroke-linecap="square"
-					stroke-linejoin="miter"
-				>
-					<path d="M48 44H3" />
-					<path d="M48 30H3" />
-					<path d="M48 16H3" />
-					<path d="M48 2H3" />
-				</svg>
+				<MenuIcon />
 			</button>
 
 			<!-- Menu Modal -->
 			<div
 				id="site-menu"
-				class="menu fixed inset-0 z-50 flex translate-x-full flex-col bg-menu-background px-(--spacing-gutter) pb-[12vh] text-menu-foreground opacity-100 invisible pointer-events-none transition-all duration-(--duration-menu) ease-menu motion-reduce:transition-none"
+				class="menu fixed inset-0 z-50 flex translate-x-full flex-col bg-menu-background px-6 pb-[12vh] text-menu-foreground opacity-100 invisible pointer-events-none transition-all duration-[1600ms] ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none"
 				role="dialog"
 				aria-modal="true"
 				aria-label="Menu"
 			>
-				<div class="flex h-header-height items-center justify-end">
+				<div class="flex h-25 items-center justify-end">
 					<button
 						type="button"
 						class="menu-close flex h-12 w-12 flex-col justify-center border-0 bg-transparent p-0 text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active cursor-pointer"
 						aria-label="Fechar menu"
 					>
-						<svg
-							viewBox="0 0 48 48"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="4"
-							aria-hidden="true"
-							class="block h-full w-full"
-							stroke-linecap="square"
-							stroke-linejoin="bevel"
-						>
-							<path d="M0 0L48 48M48 0L0 48"/>
-						</svg>
+						<CloseIcon />
 					</button>
 				</div>
 

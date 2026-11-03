@@ -1,23 +1,23 @@
 ---
-import PhotoCard from './PhotoCard.astro';
-import type { Card, PhotoCarouselProps } from '../types/photo-carousel';
+import ProjectCard from './ProjectCard.astro';
+import type { Card, CardCarouselProps } from '../types/card-carousel';
 
-interface Props extends PhotoCarouselProps {}
+interface Props extends CardCarouselProps {}
 
 const { items, ariaLabel, speed = 18, id } = Astro.props;
 
 if (items.length === 0) {
-	throw new Error('PhotoCarousel requires at least one card.');
+	throw new Error('CardCarousel requires at least one card.');
 }
 
 const eager_indexes: number[] = [0, 1, items.length - 1];
 
 if (!Number.isFinite(speed) || speed < 0) {
-	throw new Error('PhotoCarousel speed must be a non-negative number.');
+	throw new Error('CardCarousel speed must be a non-negative number.');
 }
 ---
 
-<photo-carousel
+<card-carousel
 	id={id}
 	role="region"
 	aria-label={ariaLabel}
@@ -29,18 +29,18 @@ if (!Number.isFinite(speed) || speed < 0) {
 		<div class="flex w-max gap-4" data-carousel-track>
 			<div class="flex shrink-0 gap-4" data-carousel-group>
 				{items.map((card: Card, index: number) => (
-					<PhotoCard card={card} loading={eager_indexes.includes(index) ? 'eager' : 'lazy'} />
+					<ProjectCard card={card} loading={eager_indexes.includes(index) ? 'eager' : 'lazy'} />
 				))}
 			</div>
 			<div class="flex shrink-0 gap-4" data-carousel-group aria-hidden="true" inert>
-				{items.map((card: Card) => <PhotoCard card={card} duplicate loading="lazy" />)}
+				{items.map((card: Card) => <ProjectCard card={card} duplicate loading="lazy" />)}
 			</div>
 		</div>
 	</div>
-</photo-carousel>
+</card-carousel>
 
 <script>
-	class PhotoCarouselElement extends HTMLElement {
+	class CardCarouselElement extends HTMLElement {
 		private readonly viewport: HTMLElement | null;
 		private readonly track: HTMLElement | null;
 		private readonly groups: HTMLElement[];
@@ -204,7 +204,7 @@ if (!Number.isFinite(speed) || speed < 0) {
 
 		connectedCallback(): void {
 			if (!this.viewport || !this.track || this.groups.length !== 2) {
-				throw new Error('PhotoCarousel is missing its viewport or card groups.');
+				throw new Error('CardCarousel is missing its viewport or card groups.');
 			}
 
 			this.addEventListener('pointerenter', this.onPointerEnter);
@@ -332,7 +332,7 @@ if (!Number.isFinite(speed) || speed < 0) {
 		}
 	}
 
-	if (!customElements.get('photo-carousel')) {
-		customElements.define('photo-carousel', PhotoCarouselElement);
+	if (!customElements.get('card-carousel')) {
+		customElements.define('card-carousel', CardCarouselElement);
 	}
 </script>
