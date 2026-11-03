@@ -8,7 +8,7 @@
 	--color-text: #656160;
 	--color-dark: #24211e;
 	--color-on-primary: #ffffff;
-	--spacing-header-height: 72px;
+	--spacing-header-height: 100px;
 	--spacing-gutter: 24px;
 	--duration-menu: 1.6s;
 	--ease-menu: cubic-bezier(0.25, 1, 0.5, 1);
@@ -27,6 +27,7 @@
 }
 
 :root[data-theme='dark'] {
+
 	--color-background: #24211e;
 	--color-foreground: #ffffff;
 	--color-foreground-hover: #c9c6c5;

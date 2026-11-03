@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { MapPinIcon } from '@lucide/astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -10,4 +11,57 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		description: 'Micra é um escritório de arquitetura que busca a excelência em cada projeto, com atenção aos detalhes e foco na experiência do usuário.'
 	}}
 >
+	<section class="flex w-full flex-1 items-center justify-center px-(--spacing-gutter) py-8">
+		<div class="flex w-full max-w-105 flex-col items-center text-center text-foreground">
+			<img
+				src="/assets/icon/icon-micra-branco.svg"
+				alt=""
+				aria-hidden="true"
+				class="mb-10 h-16 w-16 md:h-20 md:w-20"
+			/>
+
+			<address class="not-italic">
+				<ul class="m-0 flex list-none flex-col items-center gap-5 p-0 text-base leading-relaxed sm:text-lg">
+					<li class="flex items-center gap-3 text-center">
+						<MapPinIcon class="h-4 w-4 shrink-0 text-foreground" aria-hidden="true" focusable="false" />
+						<span>Rua Aulete Martins Menezes, 290/B · Albinópolis · Conselheiro Lafaiete · MG</span>
+					</li>
+					<li class="flex items-center gap-3 text-center">
+						<a
+							href="#"
+							class="inline-flex rounded-sm text-foreground underline-offset-4 transition-colors hover:text-foreground-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
+							aria-label="Enviar e-mail para contato da Micra"
+						>
+							contato@micraarquitetura.com.br
+						</a>
+					</li>
+					<li class="flex items-center gap-3 text-center">
+						<a
+							href="#"
+							class="inline-flex rounded-sm text-foreground underline-offset-4 transition-colors hover:text-foreground-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
+							aria-label="Ligar para a Micra"
+						>
+							+55 (31) 99420-8743
+						</a>
+					</li>
+					<li class="flex items-center gap-3 text-center">
+						<a
+							href="#"
+							class="inline-flex rounded-sm text-foreground underline-offset-4 transition-colors hover:text-foreground-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
+							aria-label="Visitar o Instagram da Micra"
+						>
+							@micraarquitetura
+						</a>
+					</li>
+				</ul>
+			</address>
+
+			<div class="my-8 h-px w-full bg-foreground-active" />
+
+			<div class="font-primary text-[10px] tracking-[0.22em] text-foreground">
+				<p>Micra Arquitetura<span class="mx-1.5">©</span>2026</p>
+				<p>Desenvolvido com S2 por Jaderson</p>
+			</div>
+		</div>
+	</section>
 </BaseLayout>

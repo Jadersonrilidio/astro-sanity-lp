@@ -31,20 +31,33 @@ const description: string = content.description || 'Micra é um escritório de a
 	<body transition:animate={fade({ duration: 1200 })} class="m-0 flex min-h-screen flex-col bg-background text-foreground font-sans">
 		<header class="flex h-header-height items-center justify-between px-(--spacing-gutter)">
 			<a class="inline-flex leading-none" href="/" aria-label="MICRA home">
-				<img src={theme === 'dark' ? '/assets/logo-micra-branco.svg' : '/assets/logo-micra.svg'} alt="micra logo" class="h-10 w-auto" />
+				<img src={theme === 'dark' ? '/assets/logo-micra-branco.svg' : '/assets/logo-micra.svg'} alt="micra logo" class="h-12 w-auto" />
 			</a>
 
 			<button
 				type="button"
-				class="menu-toggle flex h-7.5 w-9 flex-col justify-between border-0 bg-transparent p-0 text-foreground hover:text-foreground-hover active:text-foreground-active cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-foreground-hover"
+				class="menu-toggle flex h-12 w-12 flex-col justify-center border-0 bg-transparent p-0 text-foreground hover:text-foreground-hover active:text-foreground-active cursor-pointer"
 				aria-label="Abrir menu"
 				aria-controls="site-menu"
 				aria-expanded="false"
 			>
+				<!-- <span class="block h-0.75 w-full bg-current"></span>
 				<span class="block h-0.75 w-full bg-current"></span>
 				<span class="block h-0.75 w-full bg-current"></span>
-				<span class="block h-0.75 w-full bg-current"></span>
-				<span class="block h-0.75 w-full bg-current"></span>
+				<span class="block h-0.75 w-full bg-current"></span> -->
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="4"
+					stroke-linecap="square"
+					stroke-linejoin="miter"
+				>
+					<path d="M48 44H3" />
+					<path d="M48 30H3" />
+					<path d="M48 16H3" />
+					<path d="M48 2H3" />
+				</svg>
 			</button>
 
 			<!-- Menu Modal -->
@@ -55,15 +68,26 @@ const description: string = content.description || 'Micra é um escritório de a
 				aria-modal="true"
 				aria-label="Menu"
 			>
-				<button
-					type="button"
-					class="menu-close absolute right-(--spacing-gutter) top-[calc((var(--spacing-header-height)-30px)/2)] h-7.5 w-9 border-0 bg-transparent p-0 text-current cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-(--color-on-primary)"
-					aria-label="Fechar menu"
-				>
-					<svg viewBox="0 0 36 30" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" class="block h-full w-full">
-						<path d="M3 -1L33 31M33 -1L3 31"/>
-					</svg>
-				</button>
+				<div class="flex h-header-height items-center justify-end">
+					<button
+						type="button"
+						class="menu-close flex h-12 w-12 flex-col justify-center border-0 bg-transparent p-0 text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active cursor-pointer"
+						aria-label="Fechar menu"
+					>
+						<svg
+							viewBox="0 0 48 48"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="4"
+							aria-hidden="true"
+							class="block h-full w-full"
+							stroke-linecap="square"
+							stroke-linejoin="bevel"
+						>
+							<path d="M0 0L48 48M48 0L0 48"/>
+						</svg>
+					</button>
+				</div>
 
 				<nav class="menu-nav mt-auto" aria-label="Menu principal">
 					<ul class="m-0 flex list-none flex-col gap-4 p-0">
