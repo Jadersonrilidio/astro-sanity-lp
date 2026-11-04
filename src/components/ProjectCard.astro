@@ -38,10 +38,7 @@ const { card, duplicate = false, loading = 'lazy' } = Astro.props;
 			</div>
 		</div>
 		<figcaption class="mt-1">
-			<h3 class="m-0 text-base text-inherit font-bold font-primary leading-tight sm:text-lg">{card.title}</h3>
-			<p class="mt-0 mb-0 text-xs font-tags leading-relaxed text-foreground">
-				{card.tags.join(' · ')}
-			</p>
+			<h3 class="mt-0 mb-0 text-sm font-primary leading-relaxed text-inherit">{card.title}</h3>
 		</figcaption>
 	</figure>
 </a>

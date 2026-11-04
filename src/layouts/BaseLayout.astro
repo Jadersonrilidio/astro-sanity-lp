@@ -3,9 +3,14 @@ import '../styles/global.css';
 import { ClientRouter, fade } from 'astro:transitions';
 import MenuIcon from '../components/icons/MenuIcon.astro';
 import CloseIcon from '../components/icons/CloseIcon.astro';
-import type { BaseLayoutProps } from '../types/layout';
 
-interface Props extends BaseLayoutProps {}
+interface Props {
+  content: {
+    title: string;
+    description: string;
+  };
+  theme?: 'light' | 'dark';
+}
 
 const { content, theme = 'light' } = Astro.props;
 
@@ -29,7 +34,7 @@ const description: string = content.description || 'Micra é um escritório de a
 		<title>{title}</title>
 		<ClientRouter />
 	</head>
-	<body transition:animate={fade({ duration: 800 })} class="m-0 flex min-h-screen flex-col bg-background text-foreground font-sans">
+	<body transition:animate={fade({ duration: 800 })} class="max-h-screen m-0 flex min-h-screen flex-col bg-background text-foreground font-sans">
 		<div
 			id="page-overlay"
 			aria-hidden="true"
@@ -77,17 +82,23 @@ const description: string = content.description || 'Micra é um escritório de a
 					</ul>
 				</nav>
 
-				<div class="mt-[clamp(48px,12vh,120px)] flex flex-col items-end gap-1">
-					<a href="#" aria-label="E-mail" class="inline-fit font-primary font-semibold text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active">
-						E-mail
-					</a>
-					<a href="#" aria-label="WhatsApp" class="inline-fit font-primary font-light text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active">
-						WhatsApp
-					</a>
-					<a href="#" aria-label="Instagram" class="inline-fit font-primary font-light text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active">
-						Instagram
-					</a>
-				</div>
+				<ul class="mt-[clamp(48px,12vh,120px)] flex flex-col items-end">
+					<li>
+						<a href="#" aria-label="E-mail" class="inline-fit text-lg font-primary font-normal text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active">
+							contato@micraarquitetura.com.br
+						</a>
+					</li>
+					<li>
+						<a href="#" aria-label="WhatsApp" class="inline-fit text-lg font-primary font-light text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active">
+							+55 (31) 99420-8743
+						</a>
+					</li>
+					<li>
+						<a href="#" aria-label="Instagram" class="inline-fit text-lg font-primary font-light text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active">
+							@micraarquitetura
+						</a>
+					</li>
+				</ul>
 			</div>
 		</header>
 
