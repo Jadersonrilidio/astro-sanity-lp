@@ -5,7 +5,7 @@ import MenuIcon from '../components/icons/MenuIcon.astro';
 import CloseIcon from '../components/icons/CloseIcon.astro';
 
 interface Props {
-  content: {
+  content?: {
     title: string;
     description: string;
   };
@@ -14,8 +14,8 @@ interface Props {
 
 const { content, theme = 'light' } = Astro.props;
 
-const title: string = content.title || 'Micra | Escritório de Arquitetura';
-const description: string = content.description || 'Micra é um escritório de arquitetura que busca a excelência em cada projeto, com atenção aos detalhes e foco na experiência do usuário.';
+const title: string = content?.title || 'Micra | Escritório de Arquitetura';
+const description: string = content?.description || 'Micra é um escritório de arquitetura que busca a excelência em cada projeto, com atenção aos detalhes e foco na experiência do usuário.';
 ---
 
 <html lang="pt-BR" data-theme={theme} class="h-full bg-background text-foreground antialiased">
