@@ -24,7 +24,7 @@ pnpm-debug.log*
 .idea/
 
 # personal settings
-.assets/
-.specify/
-.vscode/
+.assets
+.specify
+.vscode
 package-lock.json

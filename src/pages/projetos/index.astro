@@ -1,0 +1,222 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import ProjectsTag from '../../components/ProjectsTag.astro';
+import type { Card } from '../../types/card-carousel';
+
+const filters = [
+	{ label: 'todos', value: 'todos' },
+	{ label: 'residencial', value: 'residencial' },
+	{ label: 'comercial', value: 'comercial' },
+	{ label: 'interiores', value: 'interiores' },
+	{ label: 'corporativo', value: 'corporativo' },
+	{ label: 'edifícios', value: 'edificios' }
+];
+
+const projects: Card[] = [
+	{
+		id: 'casa-ipe',
+		imageSrc: '/assets/img/carousel-sample-01.webp',
+		imageAlt: 'Casa Ipê, projeto residencial contemporâneo',
+		title: 'Casa Ipê',
+		tags: ['residencial', 'interiores']
+	},
+	{
+		id: 'loja-mangaba',
+		imageSrc: '/assets/img/carousel-sample-02.webp',
+		imageAlt: 'Loja Mangaba, projeto de espaço comercial',
+		title: 'Loja Mangaba',
+		tags: ['comercial', 'interiores']
+	},
+	{
+		id: 'edificio-brisa',
+		imageSrc: '/assets/img/carousel-sample-03.webp',
+		imageAlt: 'Edifício Brisa, projeto de edifício residencial',
+		title: 'Edifício Brisa',
+		tags: ['edificios', 'residencial']
+	},
+	{
+		id: 'sede-aurora',
+		imageSrc: '/assets/img/carousel-sample-04.webp',
+		imageAlt: 'Sede Aurora, projeto de escritório corporativo',
+		title: 'Sede Aurora',
+		tags: ['corporativo', 'interiores']
+	},
+	{
+		id: 'casa-costa',
+		imageSrc: '/assets/img/carousel-sample-05.webp',
+		imageAlt: 'Casa Costa, projeto residencial',
+		title: 'Casa Costa',
+		tags: ['residencial']
+	},
+	{
+		id: 'cafe-limoeiro',
+		imageSrc: '/assets/img/carousel-sample-01.webp',
+		imageAlt: 'Café Limoeiro, projeto de espaço comercial',
+		title: 'Café Limoeiro',
+		tags: ['comercial', 'interiores']
+	},
+	{
+		id: 'torre-do-parque',
+		imageSrc: '/assets/img/carousel-sample-02.webp',
+		imageAlt: 'Torre do Parque, projeto de edifício corporativo',
+		title: 'Torre do Parque',
+		tags: ['edificios', 'corporativo']
+	},
+	{
+		id: 'casa-patio',
+		imageSrc: '/assets/img/carousel-sample-03.webp',
+		imageAlt: 'Casa Pátio, projeto residencial com pátio interno',
+		title: 'Casa Pátio',
+		tags: ['residencial', 'interiores']
+	},
+	{
+		id: 'clinica-serena',
+		imageSrc: '/assets/img/carousel-sample-04.webp',
+		imageAlt: 'Clínica Serena, projeto comercial de interiores',
+		title: 'Clínica Serena',
+		tags: ['comercial', 'interiores']
+	},
+	{
+		id: 'centro-ipanema',
+		imageSrc: '/assets/img/carousel-sample-05.webp',
+		imageAlt: 'Centro Ipanema, projeto de edifício corporativo',
+		title: 'Centro Ipanema',
+		tags: ['edificios', 'corporativo']
+	},
+	{
+		id: 'casa-horizonte',
+		imageSrc: '/assets/img/carousel-sample-01.webp',
+		imageAlt: 'Casa Horizonte, projeto residencial contemporâneo',
+		title: 'Casa Horizonte',
+		tags: ['residencial']
+	},
+	{
+		id: 'estudio-linha',
+		imageSrc: '/assets/img/carousel-sample-02.webp',
+		imageAlt: 'Estúdio Linha, projeto de interiores comerciais',
+		title: 'Estúdio Linha',
+		tags: ['comercial', 'interiores']
+	}
+];
+
+const pageSize = 10;
+---
+
+<BaseLayout isPageHeightFix={false} >
+	<section data-projects-page class="pt-12 self-start flex flex-col w-full items-center justify-start px-6 py-6 gap-2">
+		<h2 class="self-start md:self-center m-0 font-primary text-xl font-semibold leading-tight text-[#24211e]">Projetos</h2>
+		<div class="h-px w-full bg-[#656160]" aria-hidden="true"></div>
+
+		<nav aria-label="Filtrar projetos" class="mt-2 mb-10">
+			<ul class="m-0 flex list-none flex-wrap items-center justify-start gap-x-3 px-3">
+				{filters.map((filter, index) => (
+					<li>
+						<ProjectsTag
+							label={filter.label}
+							filter={filter.value}
+							selected={index === 0}
+						/>
+					</li>
+				))}
+			</ul>
+		</nav>
+
+		<div
+			data-projects-grid
+			class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-5"
+			aria-live="polite"
+		>
+			{projects.map((project, index) => (
+				<div
+					data-project-card
+					data-tags={project.tags.join(' ')}
+					hidden={index >= pageSize}
+				>
+					<ProjectCard
+						card={project}
+						loading={index < pageSize ? 'eager' : 'lazy'}
+					/>
+				</div>
+			))}
+		</div>
+
+		<p data-projects-empty hidden class="mt-10 font-tag text-sm text-[#7d7c7d]">
+			Nenhum projeto encontrado nesta categoria.
+		</p>
+		<div data-projects-sentinel aria-hidden="true" class="h-px w-full"></div>
+	</section>
+</BaseLayout>
+
+<script>
+	const pageSize = 10;
+	let loadObserver: IntersectionObserver | undefined;
+
+	function initializeProjectsPage(): void {
+		const page = document.querySelector<HTMLElement>('[data-projects-page]');
+		if (!page || page.dataset.initialized === 'true') return;
+		page.dataset.initialized = 'true';
+
+		const cards = Array.from(page.querySelectorAll<HTMLElement>('[data-project-card]'));
+		const filterButtons = Array.from(
+			page.querySelectorAll<HTMLButtonElement>('[data-project-filter]')
+		);
+		const emptyState = page.querySelector<HTMLElement>('[data-projects-empty]');
+		const sentinel = page.querySelector<HTMLElement>('[data-projects-sentinel]');
+		let activeFilter = 'todos';
+		let visibleCount = pageSize;
+		let matchingCards: HTMLElement[] = [];
+
+		function updateVisibility(): void {
+			matchingCards = cards.filter((card) => {
+				const tags = card.dataset.tags?.split(' ') ?? [];
+				return activeFilter === 'todos' || tags.includes(activeFilter);
+			});
+
+			const matchingSet = new Set(matchingCards);
+			let visibleIndex = 0;
+			for (const card of cards) {
+				const matches = matchingSet.has(card);
+				card.hidden = !matches || visibleIndex >= visibleCount;
+				if (matches) visibleIndex += 1;
+			}
+
+			if (emptyState) emptyState.hidden = matchingCards.length > 0;
+			if (sentinel) sentinel.hidden = matchingCards.length <= visibleCount;
+		}
+
+		for (const button of filterButtons) {
+			button.addEventListener('click', () => {
+				activeFilter = button.dataset.projectFilter ?? 'todos';
+				visibleCount = pageSize;
+
+				for (const filterButton of filterButtons) {
+					const selected = filterButton === button;
+					filterButton.setAttribute('aria-pressed', String(selected));
+					filterButton.dataset.selected = String(selected);
+				}
+
+				updateVisibility();
+			});
+		}
+
+		updateVisibility();
+
+		if (sentinel && 'IntersectionObserver' in window) {
+			loadObserver?.disconnect();
+			loadObserver = new IntersectionObserver(
+				(entries) => {
+					if (entries.some((entry) => entry.isIntersecting) && matchingCards.length > visibleCount) {
+						visibleCount += pageSize;
+						updateVisibility();
+					}
+				},
+				{ rootMargin: '240px 0px' }
+			);
+			loadObserver.observe(sentinel);
+		}
+	}
+
+	document.addEventListener('astro:page-load', initializeProjectsPage);
+	if (document.readyState === 'complete') initializeProjectsPage();
+</script>

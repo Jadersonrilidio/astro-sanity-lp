@@ -3,7 +3,7 @@
 
 @theme {
 	--font-primary: "Josefin Sans", "Century Gothic", "Avenir Next", system-ui, sans-serif;
-	--font-tags: "Inter", "Century Gothic", "Avenir Next", system-ui, sans-serif;
+	--font-tag: "Inter", "Century Gothic", "Avenir Next", system-ui, sans-serif;
 
 	--color-background: #ffffff;
 	--color-foreground: #656160;

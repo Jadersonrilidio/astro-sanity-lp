@@ -21,21 +21,21 @@ const projects: Card[] = [
 	},
 	{
 		id: 'casa-patio',
-		imageSrc: '/assets/img/carousel-sample-03.jpg',
+		imageSrc: '/assets/img/carousel-sample-03.webp',
 		imageAlt: 'Projeto de casa com pátio',
 		title: 'Casa Pátio',
 		tags: ['Reforma', 'Arquitetura']
 	},
 	{
 		id: 'casa-horizonte',
-		imageSrc: '/assets/img/carousel-sample-04.jpg',
+		imageSrc: '/assets/img/carousel-sample-04.webp',
 		imageAlt: 'Projeto de residência contemporânea',
 		title: 'Casa Horizonte',
 		tags: ['Residencial', 'Interiores']
 	},
 	{
 		id: 'edificio-brisa',
-		imageSrc: '/assets/img/carousel-sample-05.jpg',
+		imageSrc: '/assets/img/carousel-sample-05.webp',
 		imageAlt: 'Projeto de edifício residencial',
 		title: 'Edifício Brisa',
 		tags: ['Arquitetura', 'Urbanismo']
@@ -43,13 +43,7 @@ const projects: Card[] = [
 ];
 ---
 
-<BaseLayout
-	theme="light"
-	content={{
-		title: 'Micra | Escritório de Arquitetura',
-		description: 'Micra é um escritório de arquitetura que busca a excelência em cada projeto, com atenção aos detalhes e foco na experiência do usuário.'
-	}}
->
+<BaseLayout>
 	<CardCarousel
 		id="projetos"
 		items={projects}

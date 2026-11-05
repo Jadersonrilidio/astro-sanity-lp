@@ -10,9 +10,10 @@ interface Props {
     description: string;
   };
   theme?: 'light' | 'dark';
+  isPageHeightFix?: boolean;
 }
 
-const { content, theme = 'light' } = Astro.props;
+const { content, theme = 'light', isPageHeightFix = true } = Astro.props;
 
 const title: string = content?.title || 'Micra | Escritório de Arquitetura';
 const description: string = content?.description || 'Micra é um escritório de arquitetura que busca a excelência em cada projeto, com atenção aos detalhes e foco na experiência do usuário.';
@@ -34,7 +35,7 @@ const description: string = content?.description || 'Micra é um escritório de 
 		<title>{title}</title>
 		<ClientRouter />
 	</head>
-	<body transition:animate={fade({ duration: 800 })} class="max-h-screen m-0 flex min-h-screen flex-col bg-background text-foreground font-sans">
+	<body transition:animate={fade({ duration: 800 })} class="m-0 flex min-h-screen flex-col bg-background text-foreground font-sans" class={isPageHeightFix ? "max-h-screen" : ""}>
 		<div
 			id="page-overlay"
 			aria-hidden="true"
@@ -76,8 +77,8 @@ const description: string = content?.description || 'Micra é um escritório de 
 				<nav class="menu-nav mt-auto" aria-label="Menu principal">
 					<ul class="m-0 flex list-none flex-col gap-4 p-0">
 						<li><a href="/" class="font-primary font-light text-[clamp(2.5rem,9vw,3rem)] uppercase leading-tight tracking-[0.04em] text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active no-underline">Início</a></li>
-						<li><a href="#sobre" class="font-primary font-light text-[clamp(2.5rem,9vw,3rem)] uppercase leading-tight tracking-[0.04em] text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active no-underline">Sobre</a></li>
-						<li><a href="#projetos" class="font-primary font-light text-[clamp(2.5rem,9vw,3rem)] uppercase leading-tight tracking-[0.04em] text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active no-underline">Projetos</a></li>
+						<li><a href="/sobre" class="font-primary font-light text-[clamp(2.5rem,9vw,3rem)] uppercase leading-tight tracking-[0.04em] text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active no-underline">Sobre</a></li>
+						<li><a href="/projetos" class="font-primary font-light text-[clamp(2.5rem,9vw,3rem)] uppercase leading-tight tracking-[0.04em] text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active no-underline">Projetos</a></li>
 						<li><a href="/contato" class="font-primary font-light text-[clamp(2.5rem,9vw,3rem)] uppercase leading-tight tracking-[0.04em] text-menu-foreground hover:text-menu-foreground-hover active:text-menu-foreground-active no-underline">Contato</a></li>
 					</ul>
 				</nav>

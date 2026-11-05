@@ -1,0 +1,19 @@
+---
+interface Props {
+	label: string;
+	filter: string;
+	selected?: boolean;
+}
+
+const { label, filter, selected = false } = Astro.props;
+---
+
+<button
+	type="button"
+	data-project-filter={filter}
+	data-selected={selected}
+	aria-pressed={selected}
+	class="cursor-pointer border-0 bg-transparent p-0 font-tag text-xs font-normal text-[#7d7c7d] transition-colors hover:text-[#cb5543] data-[selected=true]:font-bold data-[selected=true]:text-[#24211e] data-[selected=true]:hover:text-[#cb5543] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground-hover"
+>
+	{label}
+</button>
