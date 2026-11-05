@@ -35,13 +35,16 @@ const description: string = content?.description || 'Micra é um escritório de 
 		<title>{title}</title>
 		<ClientRouter />
 	</head>
-	<body transition:animate={fade({ duration: 800 })} class="m-0 flex min-h-screen flex-col bg-background text-foreground font-sans" class={isPageHeightFix ? "max-h-screen" : ""}>
+	<body
+		transition:animate={fade({ duration: 800 })}
+		class={`m-0 flex min-h-svh flex-col bg-background text-foreground font-sans ${isPageHeightFix ? 'h-svh max-h-svh overflow-y-hidden' : 'h-auto max-h-none overflow-y-auto'}`}
+	>
 		<div
 			id="page-overlay"
 			aria-hidden="true"
 			class="fixed inset-0 z-100 pointer-events-none bg-background opacity-100 transition-opacity duration-1500 delay-800 ease-out"
 		></div>
-		<header class="flex h-25 items-center justify-between px-6">
+		<header class="fixed inset-x-0 top-0 z-40 flex h-25 items-center justify-between px-6 bg-background">
 			<a class="inline-flex leading-none" href="/" aria-label="MICRA home">
 				<img src={theme === 'dark' ? '/assets/logo-micra-branco.svg' : '/assets/logo-micra.svg'} alt="micra logo" class="h-12 w-auto" />
 			</a>
@@ -103,7 +106,7 @@ const description: string = content?.description || 'Micra é um escritório de 
 			</div>
 		</header>
 
-		<main class="flex flex-1 items-center justify-center">
+		<main class={`flex flex-1 items-center justify-center pt-25 ${isPageHeightFix ? 'min-h-0 overflow-y-hidden' : ''}`}>
 			<slot />
 		</main>
 	</body>
