@@ -13,6 +13,11 @@
 	--color-menu-foreground: #ffffff;
 	--color-menu-foreground-hover: #c9c6c5;
 	--color-menu-foreground-active: #656160;
+
+	--color-theme-red: #cb5543;
+	--color-theme-dark: #24211e;
+	--color-theme-gray-light: #c9c6c5;
+	--color-theme-gray-dark: #656160;
 }
 
 :root[data-theme='dark'] {

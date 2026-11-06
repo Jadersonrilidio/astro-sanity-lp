@@ -2,6 +2,9 @@
 import '../styles/global.css';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CardCarousel from '../components/CardCarousel.astro';
+
+import { Plus } from "@lucide/astro"
+
 import type { Card } from '../types/card-carousel';
 
 const projects: Card[] = [
@@ -44,10 +47,23 @@ const projects: Card[] = [
 ---
 
 <BaseLayout>
-	<CardCarousel
-		id="projetos"
-		items={projects}
-		ariaLabel="Projetos de arquitetura"
-		speed={18}
-	/>
+	<section class="w-full h-full flex flex-col items-center justify-end gap-5">
+		<CardCarousel
+			id="projetos"
+			items={projects}
+			ariaLabel="Projetos de arquitetura"
+			speed={18}
+		/>
+		<div class="self-start sm:self-center p-6 mb-12 sm:mb-4">
+
+			<a href="/projetos" class="group m-0 flex flex-row gap-x-2 text-theme-dark hover:text-foreground-hover">
+				<Plus class="duration-300 ease-in-out group-hover:rotate-90"/>
+				<h2 class="font-primary uppercase text-lg font-medium">
+					Projetos 
+				</h2>
+			</a>
+
+			
+		</div>
+	</section>
 </BaseLayout>

@@ -3,9 +3,10 @@ interface Props {
 	label: string;
 	filter: string;
 	selected?: boolean;
+	classes?: string;
 }
 
-const { label, filter, selected = false } = Astro.props;
+const { label, filter, selected = false, classes = "" } = Astro.props;
 ---
 
 <button
@@ -13,7 +14,8 @@ const { label, filter, selected = false } = Astro.props;
 	data-project-filter={filter}
 	data-selected={selected}
 	aria-pressed={selected}
-	class="cursor-pointer border-0 bg-transparent p-0 font-tag text-xs font-normal text-[#7d7c7d] transition-colors hover:text-[#cb5543] data-[selected=true]:font-bold data-[selected=true]:text-[#24211e] data-[selected=true]:hover:text-[#cb5543] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground-hover"
+	class="cursor-pointer border-0 bg-transparent p-0 font-tag text-sm font-light uppercase text-theme-gray-dark transition-colors hover:text-theme-red data-[selected=true]:font-bold data-[selected=true]:text-theme-dark data-[selected=true]:hover:text-theme-red focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-theme-red"
+	class={classes}
 >
 	{label}
 </button>
